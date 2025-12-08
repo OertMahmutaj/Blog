@@ -1,6 +1,6 @@
 const blogRouter = require('express').Router()
 const { request } = require('../app')
-const Blog = require('../models/blog').default
+const Blog = require('../models/blog')
 
 blogRouter.get('/', async (request, response) => {
   Blog.find({}).then(blog => {

@@ -1,14 +1,14 @@
-import { Schema, model } from 'mongoose'
+const mongoose = require('mongoose')
 
-const blogSchema = Schema({
+const blogSchema = new mongoose.Schema({
   title: { type: String, required: true },
   author: { type: String, required: true },
   url: { type: String, required: true },
   likes: { type: String, default: '0' },
-  user : {
-    type : Schema.Types.ObjectId,
-    ref : 'User'
-  }
+  // user : {
+  //   type : mongoose.Schema.Types.ObjectId,
+  //   ref : 'User'
+  // }
 })
 
 blogSchema.set('toJSON', {
@@ -20,4 +20,4 @@ blogSchema.set('toJSON', {
 })
 
 
-export default model('Blog', blogSchema)
+module.exports = mongoose.model('Blog', blogSchema)

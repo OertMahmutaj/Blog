@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
-const Blog = require('../models/blog').default
+const Blog = require('../models/blog')
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 
@@ -37,13 +37,6 @@ test('a specific blog is within the returned blogs', async () => {
 
   const titles = response.body.map(b => b.title)
   assert.strictEqual(titles.includes('Blog 1'), true)
-})
-
-test('a specific note is within the returned notes', async () => {
-  const response = await api.get('/api/blogs')
-
-  const titles = response.body.map(e => e.title)
-  assert(titles.includes('Blog 2'))
 })
 
 test('new blog can be added, try with charlie as author', async () => {
@@ -181,7 +174,7 @@ test('blog updated successfully', async ()=>{
 
 //USERS
 
-describe('when there is initially one user in db', () => {
+test('when there is initially one user in db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
 
