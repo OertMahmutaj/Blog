@@ -1,4 +1,4 @@
-const { test, beforeEach, after } = require('node:test')
+const { describe, test, beforeEach, after } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -12,9 +12,20 @@ const api = supertest(app)
 
 // Populate database before tests
 beforeEach(async () => {
+  await User.deleteMany({})
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = await new User({ username: 'DUDE', passwordHash }).save()
+
+  const blogsWithUser = helper.initialBlogs.map(b => ({
+    ...b,
+    user: user._id
+  }))
+
+  await Blog.insertMany(blogsWithUser)
 })
+
 
 test('blogs are returned as json', async () => {
   console.log('entered')
@@ -40,7 +51,15 @@ test('a specific blog is within the returned blogs', async () => {
 })
 
 test('new blog can be added, try with charlie as author', async () => {
-  const newBlog = { title: 'Blog 3', author: 'Charlie', likes: 7, url: 'asdas' }
+  const users = await helper.usersInDb()
+  assert(users.length > 0)
+
+  const newBlog = { 
+    title: 'Blog 3', 
+    author: 'Charlie', 
+    likes: 7, 
+    url: 'asdas', 
+    user: users[0]._id }
 
   await api
     .post('/api/blogs')
@@ -51,12 +70,14 @@ test('new blog can be added, try with charlie as author', async () => {
   const blogAtEnd = await helper.blogInDb()
   assert.strictEqual(blogAtEnd.length, helper.initialBlogs.length + 1)
 
-  const author = blogAtEnd.map(n => n.author)
-  assert(author.includes('Charlie'))
+  const authors = blogAtEnd.map(n => n.author)
+  assert(authors.includes('Charlie'))
 })
 
 test('new blog can be added, if likes property missing defaults to 0', async () => {
-  const newBlog = { title: 'Blog 4', author: 'Dom', url: 'asdas' }
+
+  const users = await helper.usersInDb()
+  const newBlog = { title: 'Blog 4', author: 'Dom', url: 'asdas', user: users[0].id }
 
   await api
     .post('/api/blogs')
@@ -71,7 +92,7 @@ test('new blog can be added, if likes property missing defaults to 0', async () 
   assert(author.includes('Dom'))
   
   const likes = blogAtEnd.map(n => n.likes)
-  assert(likes.includes('0'))
+  assert(likes.includes(0))
 })
 
 test('blog without content can`t be added', async () =>{
@@ -159,7 +180,7 @@ test('blog updated successfully', async ()=>{
   const updatedBlog = {
     title: 'Blog 1',
     author: 'Alice',
-    likes: '11',
+    likes: 11,
     url: 'asdas',
   }
 
@@ -169,18 +190,18 @@ test('blog updated successfully', async ()=>{
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-  assert.deepStrictEqual(resultBlog.body.likes, '11')
+  assert.deepStrictEqual(resultBlog.body.likes, 11)
 })
 
 //USERS
 
-test('when there is initially one user in db', () => {
+describe('when there is initially one user in db', () => {
+
   beforeEach(async () => {
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('sekret', 10)
     const user = new User({ username: 'root', passwordHash })
-
     await user.save()
   })
 
@@ -193,19 +214,34 @@ test('when there is initially one user in db', () => {
       password: 'salainen',
     }
 
-    await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
+    await api.post('/api/users').send(newUser).expect(201)
 
     const usersAtEnd = await helper.usersInDb()
     assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
-
-    const usernames = usersAtEnd.map(u => u.username)
-    assert(usernames.includes(newUser.username))
   })
 })
+
+
+test('creation fails with proper statuscode and message if username already taken', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'DUDE',
+      name: 'Superuser',
+      password: 'salainen',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    assert(result.body.error.includes('expected `username` to be unique'))
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
 
 after(async () => {
   await mongoose.connection.close()

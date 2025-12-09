@@ -7,27 +7,35 @@ const initialBlogs = [
     author: 'Alice',
     likes: 10,
     url: 'asdas',
-    // user: User.id
+    user: null
   },
   {
     title: 'Blog 2',
     author: 'Bob',
     likes: 5,
     url: 'asdas',
-    // user: User.id
+    user: null
+  }
+]
+
+const initialUsers = [
+  {
+    username: 'firstUser',
+    passwordHash: 'firstUserPasswordHashed',
+    blogs: []
   }
 ]
 
 const nonExistingId = async () => {
-  const blog = new Blog(
-    {
+  const dummyUser = await User.findOne()
+  const blog = new Blog({
     title: 'test',
     author: 'to',
-    likes: 'remove',
+    likes: 50,
     url: 'hahaha',
-    // user: User.id
-  }
-  )
+    user: dummyUser ? dummyUser._id : null
+  })
+
   await blog.save()
   await blog.deleteOne()
 
@@ -36,10 +44,13 @@ const nonExistingId = async () => {
 
 const blogInDb = async () => {
   const blogs = await Blog.find({})
-  return blogs.map(blog => blog.toJSON())
+  return blogs.map(blog => {
+    const blogObj = blog.toJSON()
+    blogObj.user = blogObj.user.toString() 
+    return blogObj
+  })
 }
 
-//USERS
 
 const usersInDb = async () => {
   const users = await User.find({})
@@ -47,5 +58,9 @@ const usersInDb = async () => {
 }
 
 module.exports = {
-  initialBlogs, nonExistingId, blogInDb, usersInDb
+  initialBlogs,
+  initialUsers,
+  nonExistingId,
+  blogInDb,
+  usersInDb
 }
