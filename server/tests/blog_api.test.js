@@ -51,18 +51,20 @@ test('a specific blog is within the returned blogs', async () => {
 })
 
 test('new blog can be added, try with charlie as author', async () => {
-  const users = await helper.usersInDb()
-  assert(users.length > 0)
 
+  const users = await helper.usersInDb()
+  const token = await helper.loginAndGetToken(users[0].username, 'sekret')
+  
   const newBlog = { 
     title: 'Blog 3', 
     author: 'Charlie', 
     likes: 7, 
     url: 'asdas', 
-    user: users[0]._id }
+  }
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -77,11 +79,18 @@ test('new blog can be added, try with charlie as author', async () => {
 test('new blog can be added, if likes property missing defaults to 0', async () => {
 
   const users = await helper.usersInDb()
-  const newBlog = { title: 'Blog 4', author: 'Dom', url: 'asdas', user: users[0].id }
+  const token = await helper.loginAndGetToken(users[0].username, 'sekret')
+
+  const newBlog = { 
+    title: 'Blog 4', 
+    author: 'Dom', 
+    url: 'asdas'
+  }
 
   await api
     .post('/api/blogs')
     .send(newBlog)
+    .set('Authorization', `Bearer ${token}`)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -96,10 +105,15 @@ test('new blog can be added, if likes property missing defaults to 0', async () 
 })
 
 test('blog without content can`t be added', async () =>{
+
+  const users = await helper.usersInDb()
+  const token = await helper.loginAndGetToken(users[0].username, 'sekret')
+
   const newBlog = {}
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
 
@@ -121,11 +135,16 @@ test('a specific blog can be viewed', async () => {
 })
 
 test('a specific blog can be deleted', async () =>{
+
+  const users = await helper.usersInDb()
+  const token = await helper.loginAndGetToken(users[0].username, 'sekret')
+
   const blogsAtStart = await helper.blogInDb()
   const blogsToDelete = blogsAtStart[0]
 
   await api
     .delete(`/api/blogs/${blogsToDelete.id}`)
+    .set('Authorization', `Bearer ${token}`)
     .expect(204)
 
   const blogAtEnd = await helper.blogInDb()
@@ -146,6 +165,10 @@ test('unique property id is named id', async () => {
 })
 
 test('missing url or title does not create a blog', async () => {
+
+  const users = await helper.usersInDb()
+  const token = await helper.loginAndGetToken(users[0].username, 'sekret')
+
   const newBlog = {
     title : 'Blog 5',
     author : 'Ray',
@@ -154,6 +177,7 @@ test('missing url or title does not create a blog', async () => {
   await api 
   .post(`/api/blogs`)
   .send(newBlog)
+  .set('Authorization', `Bearer ${token}`)
   .expect(400)
 
   const blogAtEnd = await helper.blogInDb()
@@ -174,6 +198,9 @@ test('test fails with status code 400 if id is not valid', async () =>{
 
 test('blog updated successfully', async ()=>{
 
+  const users = await helper.usersInDb()
+  const token = await helper.loginAndGetToken(users[0].username, 'sekret')
+
   const blogsAtStart = await helper.blogInDb()
   const blogToUpdate = blogsAtStart[0]
 
@@ -187,6 +214,7 @@ test('blog updated successfully', async ()=>{
   const resultBlog = await api
     .put(`/api/blogs/${blogToUpdate.id}`)
     .send(updatedBlog)
+    .set('Authorization', `Bearer ${token}`)
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
