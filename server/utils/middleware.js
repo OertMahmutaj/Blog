@@ -1,4 +1,8 @@
+const jwt = require('jsonwebtoken')
+const { request } = require('../app')
 const logger = require('./logger')
+const User = require('../models/user')
+
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -6,6 +10,32 @@ const requestLogger = (request, response, next) => {
   logger.info('Body:  ', request.body)
   logger.info('---')
   next()
+}
+
+const userExtractor = async (request, response, next) => {
+  const authorization = request.get('authorization')
+  let token = null
+
+  if (authorization && authorization.startsWith('Bearer ')) {
+    token = authorization.replace('Bearer ', '')
+  }
+
+  if (!token) {
+    return response.status(401).json({ error: 'token missing' })
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token invalid' })
+    }
+
+    const user = await User.findById(decodedToken.id)
+    request.user = user  // attach user to request
+    next()
+  } catch (error) {
+    next(error)
+  }
 }
 
 const unknownEndpoint = (request, response) => {
@@ -36,5 +66,6 @@ const errorHandler = (error, request, response, next) => {
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  userExtractor
 }
