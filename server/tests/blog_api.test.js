@@ -5,8 +5,8 @@ const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
-const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
 const api = supertest(app)
 
@@ -25,7 +25,6 @@ beforeEach(async () => {
 
   await Blog.insertMany(blogsWithUser)
 })
-
 
 test('blogs are returned as json', async () => {
   console.log('entered')
@@ -248,7 +247,6 @@ describe('when there is initially one user in db', () => {
     assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
   })
 })
-
 
 test('creation fails with proper statuscode and message if username already taken', async () => {
     const usersAtStart = await helper.usersInDb()
