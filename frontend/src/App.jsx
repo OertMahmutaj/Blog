@@ -27,7 +27,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      setTimeout(() => setUser(user), 0)
       blogServices.setToken(user.token)   
     }
   }, [])
