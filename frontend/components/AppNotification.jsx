@@ -1,4 +1,4 @@
-const Notification = ({ message }) => {
+const AppNotification = ({ message }) => {
 
   const notificationStyle = {
     color: 'red',
@@ -12,4 +12,4 @@ const Notification = ({ message }) => {
   return <div style={notificationStyle} className="error">{message}</div>
 }
 
-export default Notification
+export default AppNotification
