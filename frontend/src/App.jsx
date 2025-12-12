@@ -34,6 +34,23 @@ const App = () => {
     }
   }, [])
 
+//   useEffect(() => {
+//   const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+//   if (loggedUserJSON) {
+//     const userFromStorage = JSON.parse(loggedUserJSON)
+
+//     // normalize _id to id for comparison
+//     const normalizedUser = {
+//       ...userFromStorage,
+//       id: userFromStorage._id || userFromStorage.id
+//     }
+
+//     setUser(normalizedUser)
+//     blogServices.setToken(normalizedUser.token)
+//   }
+// }, [])
+
+
   const logoutHandler = () => {
   window.localStorage.removeItem('loggedNoteappUser') // clear stored user
   setUser(null) // clear state
@@ -63,14 +80,25 @@ const App = () => {
   }
 
   const handleDelete = async (id) => {
+  const confirmDelete = window.confirm('Are you sure you want to delete this blog?')
+  if (!confirmDelete) return
   try {
     await blogServices.deleteBlog(id)
     setBlogs(blogs.filter(b => b.id !== id))
   } catch (error) {
     console.error(error)
   }
-}
+  }
+  const handleLike = async (blog) => {
+  if (!blog.id) return
 
+  try {
+    const updatedBlog = await blogServices.like(blog.id, blog)
+    setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
+  } catch (error) {
+    console.error(error)
+  }
+}
 
   const blogsToShow = blogs
 
@@ -101,6 +129,9 @@ const App = () => {
 
   console.log(typeof(blogs))
   console.log(blogs.map(n => n.author))
+  console.log('Logged in user:', user)
+  console.log('Blog user:', blogs.user)
+
 
   if (user === null) {
   return (
@@ -136,11 +167,16 @@ const App = () => {
         {blogsToShow.map(blog => (
           <li key={blog.id} style={{ marginBottom: '10px', listStyle: 'none' }}>
             <Blog blog={blog} />
+            {user.username && blog.user && user.username === blog.user.username && (
+              <button onClick={() => handleDelete(blog.id)}>Delete</button>
+            )}
+
+
             <button 
-              onClick={() => handleDelete(blog.id)} 
+              onClick={() => handleLike(blog)} 
               style={{ marginLeft: '10px', padding: '4px 8px' }}
             >
-              Delete
+              Like
             </button>
           </li>
         ))}

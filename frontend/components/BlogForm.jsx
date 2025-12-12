@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import blogServices from '../services/blogs'
 import AppNotification from './AppNotification'
 
@@ -9,6 +9,16 @@ const BlogForm = () => {
   const [newUrl, setNewUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+      const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+      if (loggedUserJSON) {
+        const user = JSON.parse(loggedUserJSON)
+        setTimeout(() => setUser(user), 0)
+        blogServices.setToken(user.token)   
+      }
+    }, [])
 
   const addBlog = async (event) => {
     event.preventDefault()
@@ -24,7 +34,7 @@ const BlogForm = () => {
       setNewAuthor('')
       setNewTitle('')
       setNewUrl('')
-      setSuccessMessage(`A new blog "${returnedBlog.title}" added`)
+      setSuccessMessage(`A new blog "${returnedBlog.title}" added by ${user.username}`)
       setTimeout(() => setSuccessMessage(null), 5000) // clear after 5s
     } catch {
       setErrorMessage('wrong just wrong')

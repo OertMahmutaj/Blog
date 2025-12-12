@@ -77,23 +77,31 @@ blogRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
 
 
 blogRouter.put('/:id', middleware.userExtractor, async (request, response) => {
-
-  const user = request.user
   const body = request.body
 
+  const updatedBlog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes
+  }
+
   try {
-    const updatedBlog = await Blog.findByIdAndUpdate(
+    const result = await Blog.findByIdAndUpdate(
       request.params.id,
-      request.body,
-      { new: true }
-    )
-    if (!updatedBlog) {
-      response.json(updatedBlog)
-    } 
-    response.status(200).json(updatedBlog);
+      updatedBlog,
+      { new: true, runValidators: true }
+    ).populate('user', { username: 1, name: 1 })
+
+    if (!result) {
+      return response.status(404).json({ error: 'blog not found' })
+    }
+
+    response.status(200).json(result)
   } catch (error) {
-    response.status(400).json({ error: 'invalid id or token' });
+    response.status(400).json({ error: 'invalid id or token' })
   }
 })
+
 
 module.exports = blogRouter
