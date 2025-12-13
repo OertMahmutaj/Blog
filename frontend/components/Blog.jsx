@@ -10,15 +10,19 @@ const Blog = ({ blog }) => {
     marginBottom: 5
   }
   console.log(blog.user?.username)
+
   return (
     <div style={blogStyle} className="blog">
       <strong>{blog.title}</strong>
     
     <Togglable buttonLabel="viewBlog">
       <ul>{blog.author}</ul>
+      <ul>{blog.title}</ul>
+    </Togglable>
+    <Togglable buttonLabel="viewLikesAndUrl">
       <ul>{blog.url}</ul>
-      <ul>{blog.likes}</ul>
-      <ul>{blog.user?.username}</ul>
+        <ul>{blog.likes}</ul>
+        <ul>{blog.user?.username}</ul>
     </Togglable>
     </div>
   )

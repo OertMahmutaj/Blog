@@ -7,6 +7,7 @@ import Footer from '../components/Footer'
 import LoginForm from '../components/LoginForm'
 import Togglable from '../components/Togglable'
 import BlogForm from '../components/BlogForm'
+import BlogItem from '../components/BlogItem'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -130,7 +131,7 @@ const App = () => {
       {user && (
         <div>
           <p>{user.name} logged in</p>
-          <Togglable buttonLabel="new note" ref={blogFormRef}>
+          <Togglable buttonLabel="Make a new Blog" ref={blogFormRef}>
             <BlogForm createBlog={createBlog} user={user} />
           </Togglable>
         </div>
@@ -143,12 +144,10 @@ const App = () => {
             {user.username && blog.user && user.username === blog.user.username && (
               <button onClick={() => handleDelete(blog.id)}>Delete</button>
             )}
-            <button
-              onClick={() => handleLike(blog)}
-              style={{ marginLeft: '10px', padding: '4px 8px' }}
-            >
-              Like
-            </button>
+            <BlogItem
+              blog={blog}
+              handleLike={() => handleLike(blog)}
+            />
           </li>
         ))}
       </ul>
