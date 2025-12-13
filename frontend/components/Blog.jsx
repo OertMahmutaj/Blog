@@ -9,7 +9,7 @@ const Blog = ({ blog }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  console.log(blog.user.username)
+  console.log(blog.user?.username)
   return (
     <div style={blogStyle} className="blog">
       <strong>{blog.title}</strong>
