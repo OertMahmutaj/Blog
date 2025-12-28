@@ -1,0 +1,27 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "Backend Servers Tests for the Helsinki fullstack open course/BlogApp",
+  "main": "index.js",
+  "scripts": {
+    "test":"playwright test",
+    "test:report":"playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OertMahmutaj/Blog.git"
+    
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/OertMahmutaj/Blog/issues"
+  },
+  "homepage": "https://github.com/OertMahmutaj/Blog#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.2"
+  }
+}

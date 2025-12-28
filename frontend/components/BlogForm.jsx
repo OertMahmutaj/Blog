@@ -36,10 +36,10 @@ const BlogForm = ({ createBlog }) => {
     setNewTitle('')
     setNewUrl('')
 
-    if (user) {
-      setSuccessMessage(`A new blog "${blogObject.title}" added by ${user.username}`)
-      setTimeout(() => setSuccessMessage(null), 5000)
-    }
+    // if (user) {
+    //   setSuccessMessage(`A new blog "${blogObject.title}" added by ${user.username}`)
+    //   setTimeout(() => setSuccessMessage(null), 5000)
+    // }
   }
 
   const handleBlogChange = (event) => {
@@ -66,6 +66,7 @@ const BlogForm = ({ createBlog }) => {
           name="title"
           value={newTitle}
           onChange={handleBlogChange}
+          placeholder='write title here'
         />
       </label>
       <label>
@@ -75,6 +76,7 @@ const BlogForm = ({ createBlog }) => {
           value={newUrl}
           onChange={handleBlogChange}
           id='url-id'
+          placeholder='write url here'
         />
       </label>
       <button type="submit">save</button>

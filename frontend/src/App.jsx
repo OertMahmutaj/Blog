@@ -60,7 +60,7 @@ const App = () => {
     try {
       const returnedBlog = await blogServices.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
-      setSuccessMessage(`A new blog "${returnedBlog.title}" added by ${user.username}`)
+      setSuccessMessage(`A new blog ${returnedBlog.title} added by ${user.username}`)
       setTimeout(() => setSuccessMessage(null), 5000)
     } catch (error) {
       setErrorMessage('wrong just wrong')
@@ -89,6 +89,12 @@ const App = () => {
     }
   }
 
+  const sortBlogsByLikesDescending = () =>
+  setBlogs(prev =>
+    [...prev].sort((a, b) => b.likes - a.likes)
+  );
+
+
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : '' }
     const showWhenVisible = { display: loginVisible ? '' : 'none' }
@@ -108,6 +114,7 @@ const App = () => {
           />
           <button onClick={() => setLoginVisible(false)}>cancel</button>
         </div>
+      <Footer />
       </div>
     )
   }
@@ -128,6 +135,7 @@ const App = () => {
       <AppNotification message={errorMessage || successMessage} />
 
       {!user && loginForm()}
+      
       {user && (
         <div>
           <p>{user.name} logged in</p>
@@ -136,7 +144,7 @@ const App = () => {
           </Togglable>
         </div>
       )}
-
+      <button onClick={sortBlogsByLikesDescending}>Sort Descending</button>
       <ul style={{ padding: 0 }}>
         {blogs.map(blog => (
           <li key={blog.id} style={{ marginBottom: '10px', listStyle: 'none' }}>
@@ -151,14 +159,12 @@ const App = () => {
           </li>
         ))}
       </ul>
-
       {user && (
         <div>
           <button onClick={logoutHandler}>logout</button>
         </div>
-      )}
-
-      <Footer />
+      )} 
+    <Footer />
     </div>
   )
 }

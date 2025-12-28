@@ -20,9 +20,13 @@ const Blog = ({ blog }) => {
       <ul>{blog.title}</ul>
     </Togglable>
     <Togglable buttonLabel="viewLikesAndUrl">
+      <div>
+        <label> Properties
       <ul>{blog.url}</ul>
-        <ul>{blog.likes}</ul>
-        <ul>{blog.user?.username}</ul>
+      <ul>{blog.likes}</ul>
+      <ul>{blog.user?.username}</ul>
+        </label>
+      </div>
     </Togglable>
     </div>
   )
