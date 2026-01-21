@@ -15,11 +15,18 @@ const setToken = newToken => {
 //   return null
 // }
 
+const getAll = async () =>{
+    const response = await fetch(baseUrl)
 
-const getAll = async () => {
-  const request = axios.get(baseUrl)
-  const response = await request
-    return response.data
+    if(!response.ok){
+        throw new Error('Failed to load blogs')
+    }
+
+    
+    const data = await response.json()
+    console.log(data)
+    return data
+
 }
 
 const create = async newObject => {

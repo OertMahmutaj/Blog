@@ -9,6 +9,11 @@ const Blog = ({ blog }) => {
     borderWidth: 1,
     marginBottom: 5
   }
+  if(!blog) {
+    return(
+      <div>is loading</div>
+    )
+  }
   console.log(blog.user?.username)
 
   return (

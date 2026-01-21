@@ -11,13 +11,16 @@ import LoginForm from '../components/LoginForm'
 import Togglable from '../components/Togglable'
 import BlogForm from '../components/BlogForm'
 import BlogItem from '../components/BlogItem'
+import BlogList from '../components/BlogList'
+
 import { setNotification } from './reducers/notificationReducer'
+import { initialiazeBlogs } from './reducers/blogReducer'
 
 const App = () => {
 
   const dispatch = useDispatch()
 
-  const [blogs, setBlogs] = useState([])
+  // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -27,12 +30,18 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  useEffect(() => {
-    blogServices.getAll().then(initialBlogs => {
-      setBlogs(initialBlogs)
-    })
-  }, [])
+  // useEffect(() => {
+  //   blogServices.getAll().then(initialBlogs => {
+  //     setBlogs(initialBlogs)
+  //   })
+  // }, [])
 
+  useEffect(() => {
+    dispatch(initialiazeBlogs())
+    // console.log(blogs)
+  }, [dispatch])
+
+  // console.log(blogs)
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
     if (loggedUserJSON) {
@@ -54,7 +63,7 @@ const App = () => {
       dispatch(setNotification((`${username} logged in`), 5))
     } catch {
       dispatch(setNotification((`wrong credentials`), 5))
-      setErrorMessage(true)
+      // setErrorMessage(true)
       // setErrorMessage(false)
     }
   }
@@ -65,41 +74,41 @@ const App = () => {
     blogServices.setToken(null)
   }
 
-  const createBlog = async (blogObject) => {
-    try {
-      const returnedBlog = await blogServices.create(blogObject)
-      setBlogs(blogs.concat(returnedBlog))
-      dispatch(setNotification(`A new blog ${returnedBlog.title} added by ${user.username}`))
-    } catch (error) {
-      dispatch(setNotification((`all fields are required`), 5))
-    }
-  }
+  // const createBlog = async (blogObject) => {
+  //   try {
+  //     const returnedBlog = await blogServices.create(blogObject)
+  //     setBlogs(blogs.concat(returnedBlog))
+  //     dispatch(setNotification(`A new blog ${returnedBlog.title} added by ${user.username}`))
+  //   } catch (error) {
+  //     dispatch(setNotification((`all fields are required`), 5))
+  //   }
+  // }
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this blog?')
-    if (!confirmDelete) return
-    try {
-      await blogServices.deleteBlog(id)
-      setBlogs(blogs.filter(b => b.id !== id))
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  // const handleDelete = async (id) => {
+  //   const confirmDelete = window.confirm('Are you sure you want to delete this blog?')
+  //   if (!confirmDelete) return
+  //   try {
+  //     await blogServices.deleteBlog(id)
+  //     setBlogs(blogs.filter(b => b.id !== id))
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }
 
-  const handleLike = async (blog) => {
-    if (!blog.id) return
-    try {
-      const updatedBlog = await blogServices.like(blog.id, blog)
-      setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  // const handleLike = async (blog) => {
+  //   if (!blog.id) return
+  //   try {
+  //     const updatedBlog = await blogServices.like(blog.id, blog)
+  //     setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }
 
-  const sortBlogsByLikesDescending = () =>
-  setBlogs(prev =>
-    [...prev].sort((a, b) => b.likes - a.likes)
-  );
+  // const sortBlogsByLikesDescending = () =>
+  // setBlogs(prev =>
+  //   [...prev].sort((a, b) => b.likes - a.likes)
+  // );
 
 
   const loginForm = () => {
@@ -140,19 +149,20 @@ const App = () => {
     <div>
       <h1>Blogs</h1>
       <AppNotification/>
+      <BlogList/>
+      {/* <Blog/> */}
 
       {!user && loginForm()}
       
-      {user && (
+      {/* {user && (
         <div>
-          {/* <p>{user.name} logged in</p> */}
           <Togglable buttonLabel="Make a new Blog" ref={blogFormRef}>
             <BlogForm createBlog={createBlog} user={user} />
           </Togglable>
         </div>
-      )}
-      <button onClick={sortBlogsByLikesDescending}>Sort Descending</button>
-      <ul style={{ padding: 0 }}>
+      )} */}
+      {/* <button onClick={sortBlogsByLikesDescending}>Sort Descending</button> */}
+      {/* <ul style={{ padding: 0 }}>
         {blogs.map(blog => (
           <li key={blog.id} style={{ marginBottom: '10px', listStyle: 'none' }}>
             <Blog blog={blog} />
@@ -165,7 +175,7 @@ const App = () => {
             />
           </li>
         ))}
-      </ul>
+      </ul> */}
       {user && (
         <div>
           <button onClick={logoutHandler}>logout</button>
