@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+
+import { useDispatch } from 'react-redux'
+
 import Blog from '../components/Blog'
 import AppNotification from '../components/AppNotification'
 import blogServices from '../services/blogs'
@@ -8,14 +11,18 @@ import LoginForm from '../components/LoginForm'
 import Togglable from '../components/Togglable'
 import BlogForm from '../components/BlogForm'
 import BlogItem from '../components/BlogItem'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
+
+  const dispatch = useDispatch()
+
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
+  // const [errorMessage, setErrorMessage] = useState(null)
+  // const [successMessage, setSuccessMessage] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
 
   const blogFormRef = useRef()
@@ -44,9 +51,11 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      dispatch(setNotification((`${username} logged in`), 5))
     } catch {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => setErrorMessage(null), 5000)
+      dispatch(setNotification((`wrong credentials`), 5))
+      setErrorMessage(true)
+      // setErrorMessage(false)
     }
   }
 
@@ -60,11 +69,9 @@ const App = () => {
     try {
       const returnedBlog = await blogServices.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
-      setSuccessMessage(`A new blog ${returnedBlog.title} added by ${user.username}`)
-      setTimeout(() => setSuccessMessage(null), 5000)
+      dispatch(setNotification(`A new blog ${returnedBlog.title} added by ${user.username}`))
     } catch (error) {
-      setErrorMessage('wrong just wrong')
-      setTimeout(() => setErrorMessage(null), 5000)
+      dispatch(setNotification((`all fields are required`), 5))
     }
   }
 
@@ -123,7 +130,7 @@ const App = () => {
     return (
       <div>
         <h1>Blogs</h1>
-        <AppNotification message={errorMessage} />
+        <AppNotification/>
         {loginForm()}
       </div>
     )
@@ -132,13 +139,13 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-      <AppNotification message={errorMessage || successMessage} />
+      <AppNotification/>
 
       {!user && loginForm()}
       
       {user && (
         <div>
-          <p>{user.name} logged in</p>
+          {/* <p>{user.name} logged in</p> */}
           <Togglable buttonLabel="Make a new Blog" ref={blogFormRef}>
             <BlogForm createBlog={createBlog} user={user} />
           </Togglable>

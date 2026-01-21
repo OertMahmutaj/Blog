@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
-import AppNotification from './AppNotification'
+// import AppNotification from './AppNotification'
 
 const BlogForm = ({ createBlog }) => {
   const [blogs, setBlogs] = useState([])
   const [newAuthor, setNewAuthor] = useState('')
   const [newTitle, setNewTitle] = useState('')
   const [newUrl, setNewUrl] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
+  // const [errorMessage, setErrorMessage] = useState(null)
+  // const [successMessage, setSuccessMessage] = useState(null)
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -80,13 +80,13 @@ const BlogForm = ({ createBlog }) => {
         />
       </label>
       <button type="submit">save</button>
-      {successMessage && <p>{successMessage}</p>}
+      {/* {successMessage && <p>{successMessage}</p>} */}
     </form>
   )
 
   return (
     <div>
-      <AppNotification message={errorMessage} />
+      {/* <AppNotification message={errorMessage} /> */}
       <h2>Create a new blog</h2>
       {blogForm()}
     </div>
