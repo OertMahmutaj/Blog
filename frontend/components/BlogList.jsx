@@ -1,31 +1,29 @@
-import { useDispatch, useSelector } from "react-redux";
-import { updateBlog, removeBlog } from "../src/reducers/blogReducer";
 import { useContext } from "react";
 import Blog from "./Blog";
 import NotificationContext from "../src/NotificationContext";
-import blogServices from "../services/blogs"
+import blogServices from "../services/blogs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import UserContext from "../src/UserContext";
 
 const BlogList = ({ blogs }) => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const { user } = useContext(UserContext);
   const { setNotification } = useContext(NotificationContext);
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const likeBlogMutation = useMutation({
     mutationFn: blogServices.like,
-    onSuccess: () => { 
-      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
     },
-  })
+  });
 
   const deleteBlogMutation = useMutation({
     mutationFn: blogServices.deleteBlog,
-    onSuccess: () =>{
-      queryClient.invalidateQueries({ queryKey: ['blogs']})
-      setNotification('Blog deleted', 3000)
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      setNotification("Blog deleted", 3000);
     },
-  })
+  });
 
   const handleLike = (blog) => {
     const updatedBlog = {
@@ -33,7 +31,7 @@ const BlogList = ({ blogs }) => {
       likes: blog.likes + 1,
     };
     // console.log(updatedBlog)
-    likeBlogMutation.mutate({ id: blog.id, likes: updatedBlog.likes })
+    likeBlogMutation.mutate({ id: blog.id, likes: updatedBlog.likes });
     setNotification(`You liked blog ${blog.title}`, 3000);
   };
 
@@ -46,8 +44,7 @@ const BlogList = ({ blogs }) => {
     try {
       deleteBlogMutation.mutate(blog.id);
     } catch (error) {
-          console.error(error)
-        
+      console.error(error);
     }
   };
   // console.log(user);

@@ -1,8 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useContext } from "react";
 
 import { useQuery } from "@tanstack/react-query";
-
-import { useDispatch, useSelector } from "react-redux";
 
 import AppNotification from "../components/AppNotification";
 import blogServices from "../services/blogs";
@@ -12,27 +10,16 @@ import Togglable from "../components/Togglable";
 import BlogForm from "../components/BlogForm";
 import BlogList from "../components/BlogList";
 
-import { removeUser, setUser } from "../src/reducers/loginReducer";
+import UserContext from "./UserContext"
 
 const App = () => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
 
   const blogFormRef = useRef();
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedNoteappUser");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      dispatch(setUser(user));
-      blogServices.setToken(user.token);
-    }
-  }, [dispatch]);
+  const { user, clearUser } = useContext(UserContext);
 
   const logoutHandler = () => {
-    window.localStorage.removeItem("loggedNoteappUser");
-    dispatch(removeUser());
-    blogServices.setToken(null);
+    clearUser()
   };
 
   const result = useQuery({
