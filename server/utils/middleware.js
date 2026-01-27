@@ -3,7 +3,6 @@ const { request } = require('../app')
 const logger = require('./logger')
 const User = require('../models/user')
 
-
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
   logger.info('Path:  ', request.path)

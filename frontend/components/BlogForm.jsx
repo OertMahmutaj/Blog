@@ -1,96 +1,59 @@
-import { useState, useEffect } from 'react'
-// import AppNotification from './AppNotification'
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 
-const BlogForm = ({ createBlog }) => {
-  const [blogs, setBlogs] = useState([])
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newTitle, setNewTitle] = useState('')
-  const [newUrl, setNewUrl] = useState('')
-  // const [errorMessage, setErrorMessage] = useState(null)
-  // const [successMessage, setSuccessMessage] = useState(null)
-  const [user, setUser] = useState(null)
+import { useField } from "../hooks/customHooks";
+import blogServices from "../services/blogs";
+
+// import { appendBlog } from "../src/reducers/blogReducer";
+// import { useDispatch } from "react-redux";
+
+const BlogForm = () => {
+  // const dispatch = useDispatch();
+  const [user, setUser] = useState(null);
+  const author = useField("text");
+  const title = useField("text");
+  const url = useField("text");
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJSON = window.localStorage.getItem("loggedNoteappUser");
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setTimeout(() => setUser(user), 0)
+      const user = JSON.parse(loggedUserJSON);
+      setTimeout(() => setUser(user), 0);
     }
-  }, [])
+  }, []);
 
-  const addBlog = (event) => {
-    event.preventDefault()
+  const newBlogMutation = useMutation({
+    mutationFn: blogServices.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+    },
+  });
 
-    const blogObject = {
-      author: newAuthor,
-      title: newTitle,
-      url: newUrl
-    }
+  const addBlog = async (event) => {
+    event.preventDefault();
 
-    // Call the parent callback
-    createBlog(blogObject)
+    const newBlog = {
+      author: author.value,
+      title: title.value,
+      url: url.value,
+    };
 
-    // Keep extra logic intact
-    setBlogs(blogs.concat(blogObject))
-    setNewAuthor('')
-    setNewTitle('')
-    setNewUrl('')
+    newBlogMutation.mutate(newBlog);
 
-    // if (user) {
-    //   setSuccessMessage(`A new blog "${blogObject.title}" added by ${user.username}`)
-    //   setTimeout(() => setSuccessMessage(null), 5000)
-    // }
-  }
-
-  const handleBlogChange = (event) => {
-    const { name, value } = event.target
-    if (name === 'author') setNewAuthor(value)
-    if (name === 'title') setNewTitle(value)
-    if (name === 'url') setNewUrl(value)
-  }
-
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
-      <label>
-        Author
-        <input
-          name="author"
-          value={newAuthor}
-          onChange={handleBlogChange}
-          placeholder='write author here'
-        />
-      </label>
-      <label>
-        Title
-        <input
-          name="title"
-          value={newTitle}
-          onChange={handleBlogChange}
-          placeholder='write title here'
-        />
-      </label>
-      <label>
-        Url
-        <input
-          name="url"
-          value={newUrl}
-          onChange={handleBlogChange}
-          id='url-id'
-          placeholder='write url here'
-        />
-      </label>
-      <button type="submit">save</button>
-      {/* {successMessage && <p>{successMessage}</p>} */}
-    </form>
-  )
+    author.reset();
+    title.reset();
+    url.reset();
+  };
 
   return (
-    <div>
-      {/* <AppNotification message={errorMessage} /> */}
-      <h2>Create a new blog</h2>
-      {blogForm()}
-    </div>
-  )
-}
+    <form onSubmit={addBlog}>
+      <input placeholder="author" type="author" {...author} />
+      <input placeholder="title" type="title" {...title} />
+      <input placeholder="url" type="url" {...url} />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
 
-export default BlogForm
+export default BlogForm;

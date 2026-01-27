@@ -1,6 +1,6 @@
 import Togglable from "./Togglable"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleClick, children }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -14,7 +14,7 @@ const Blog = ({ blog }) => {
       <div>is loading</div>
     )
   }
-  console.log(blog.user?.username)
+  // console.log(blog.user?.username)
 
   return (
     <div style={blogStyle} className="blog">
@@ -30,6 +30,8 @@ const Blog = ({ blog }) => {
       <ul>{blog.url}</ul>
       <ul>{blog.likes}</ul>
       <ul>{blog.user?.username}</ul>
+      <button onClick={handleClick}>Like</button>
+      {children}
         </label>
       </div>
     </Togglable>

@@ -4,13 +4,12 @@
   "description": "Backend Servers Tests for the Helsinki fullstack open course/BlogApp",
   "main": "index.js",
   "scripts": {
-    "test":"playwright test",
-    "test:report":"playwright show-report"
+    "test": "playwright test",
+    "test:report": "playwright show-report"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OertMahmutaj/Blog.git"
-    
   },
   "keywords": [],
   "author": "",
@@ -23,5 +22,8 @@
   "devDependencies": {
     "@playwright/test": "^1.57.0",
     "@types/node": "^25.0.2"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.20"
   }
 }
