@@ -1,14 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import { useField } from "../hooks/customHooks";
+
 import blogServices from "../services/blogs";
 
-// import { appendBlog } from "../src/reducers/blogReducer";
-// import { useDispatch } from "react-redux";
+import NotificationContext from "../src/NotificationContext";
 
 const BlogForm = () => {
-  // const dispatch = useDispatch();
+
+  const { setNotification } = useContext(NotificationContext);
+
   const [user, setUser] = useState(null);
   const author = useField("text");
   const title = useField("text");
@@ -28,6 +30,10 @@ const BlogForm = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
     },
+    onError: (error) => {
+      setNotification(error.response.data.error, 3000)
+      // console.log(error.response.data.error)
+    }
   });
 
   const addBlog = async (event) => {

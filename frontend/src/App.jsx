@@ -1,4 +1,4 @@
-import { useEffect, useRef, useContext } from "react";
+import { useRef, useContext } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -9,17 +9,17 @@ import LoginForm from "../components/LoginForm";
 import Togglable from "../components/Togglable";
 import BlogForm from "../components/BlogForm";
 import BlogList from "../components/BlogList";
+import ViewUsers from "../components/ViewUsers";
 
-import UserContext from "./UserContext"
+import UserContext from "./UserContext";
 
 const App = () => {
-
   const blogFormRef = useRef();
 
   const { user, clearUser } = useContext(UserContext);
 
   const logoutHandler = () => {
-    clearUser()
+    clearUser();
   };
 
   const result = useQuery({
@@ -51,6 +51,7 @@ const App = () => {
           <button onClick={logoutHandler}>logout</button>
         </div>
       )}
+      <ViewUsers />
       <Footer />
     </div>
   );

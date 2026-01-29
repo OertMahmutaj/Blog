@@ -1,17 +1,12 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../src/reducers/loginReducer";
-import blogServices from "../services/blogs";
+import { useState, useContext } from "react";
 import loginServices from "../services/login"
 
-import { useContext } from "react";
 import NotificationContext from "../src/NotificationContext";
 import UserContext from "../src/UserContext";
 
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 
 const LoginForm = () => {
-  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -26,7 +21,6 @@ const LoginForm = () => {
       setUsername("");
       setPassword("");
       setUser(returnedUser)
-      // setNotification(`Welcome ${returnedUser.username}`, 3000);
     },
     onError: () =>{
       setNotification("Wrong credentials", 3000);
@@ -39,15 +33,19 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleLogin}>
+    <form autoComplete="on" onSubmit={handleLogin}>
       <input
         type="text"
+        name="username"
+        autoComplete="username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         placeholder="Username"
       />
       <input
         type="password"
+        name="password"
+        autoComplete="current-password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
