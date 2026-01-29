@@ -1,5 +1,5 @@
 import { useReducer, createContext, useContext, useEffect } from "react";
-import blogServices from "../services/blogs"
+import blogServices from "../services/blogs";
 import NotificationContext from "./NotificationContext";
 
 const userReducer = (state, action) => {
@@ -21,22 +21,22 @@ export const UserContextProvider = (props) => {
 
   const setUser = (user) => {
     dispatchUser({ type: "SET_USER", payload: user });
-    localStorage.setItem('loggedNoteappUser', JSON.stringify(user));
+    localStorage.setItem("loggedNoteappUser", JSON.stringify(user));
     blogServices.setToken(user.token);
     setNotification(`Welcome ${user.username}`, 3000);
   };
 
   const clearUser = () => {
     dispatchUser({ type: "LOGOUT_USER" });
-    localStorage.clear()
-  }
+    localStorage.clear();
+  };
 
   useEffect(() => {
-        const savedUser = localStorage.getItem("loggedNoteappUser")
-        if (savedUser) {
-            setUser(JSON.parse(savedUser))
-        }
-    }, [])
+    const savedUser = localStorage.getItem("loggedNoteappUser");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, dispatchUser, setUser, clearUser }}>

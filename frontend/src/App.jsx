@@ -1,37 +1,52 @@
 import { useRef, useContext } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+import blogServices from "../services/blogs";
+import userServices from "../services/users";
 
 import AppNotification from "../components/AppNotification";
-import blogServices from "../services/blogs";
 import Footer from "../components/Footer";
 import LoginForm from "../components/LoginForm";
 import Togglable from "../components/Togglable";
 import BlogForm from "../components/BlogForm";
 import BlogList from "../components/BlogList";
-import ViewUsers from "../components/ViewUsers";
+import UsersList from "../components/UsersList";
 
 import UserContext from "./UserContext";
 
 const App = () => {
   const blogFormRef = useRef();
+  const queryClient = useQueryClient();
+
 
   const { user, clearUser } = useContext(UserContext);
 
   const logoutHandler = () => {
     clearUser();
+    queryClient.clear();
   };
 
-  const result = useQuery({
+  const blogsQuery = useQuery({
     queryKey: ["blogs"],
     queryFn: blogServices.getAll,
     refetchOnWindowFocus: false,
   });
-  if (result.isLoading) {
+
+  const usersQuery = useQuery({
+    queryKey: ["users"],
+    queryFn: userServices.getAll,
+    enabled: !!user,
+    refetchOnWindowFocus: false,
+  });
+  if (blogsQuery.isLoading || usersQuery.isLoading) {
     return <div>loading data...</div>;
   }
-  const blogs = result.data;
 
+  const blogs = blogsQuery.data;
+  const users = usersQuery.data;
+
+  console.log(users)
   return (
     <div>
       <h1>Blogs</h1>
@@ -51,7 +66,7 @@ const App = () => {
           <button onClick={logoutHandler}>logout</button>
         </div>
       )}
-      <ViewUsers />
+      <UsersList users={users} />
       <Footer />
     </div>
   );
