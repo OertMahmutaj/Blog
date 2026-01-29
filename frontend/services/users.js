@@ -11,4 +11,14 @@ const getAll = async () => {
   return data;
 };
 
-export default { getAll };
+const getUser = async (id) => {
+  const response = await fetch(`${baseUrl}/${id}`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to get user`);
+  }
+  const data = await response.json();
+  return data;
+};
+
+export default { getAll, getUser };

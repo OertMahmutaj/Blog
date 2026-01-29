@@ -1,4 +1,5 @@
 import { useRef, useContext } from "react";
+import { Routes, Route } from "react-router-dom";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -12,13 +13,13 @@ import Togglable from "../components/Togglable";
 import BlogForm from "../components/BlogForm";
 import BlogList from "../components/BlogList";
 import UsersList from "../components/UsersList";
+import User from "../components/User";
 
 import UserContext from "./UserContext";
 
 const App = () => {
   const blogFormRef = useRef();
   const queryClient = useQueryClient();
-
 
   const { user, clearUser } = useContext(UserContext);
 
@@ -46,27 +47,28 @@ const App = () => {
   const blogs = blogsQuery.data;
   const users = usersQuery.data;
 
-  console.log(users)
+  console.log(users);
   return (
     <div>
       <h1>Blogs</h1>
       <AppNotification />
+
       {user && (
-        <div>
-          <Togglable buttonLabel="Make a new Blog" ref={blogFormRef}>
-            <BlogForm user={user} />
-          </Togglable>
-        </div>
+        <Togglable buttonLabel="Make a new Blog" ref={blogFormRef}>
+          <BlogForm user={user} />
+        </Togglable>
       )}
 
       {!user ? <LoginForm /> : <BlogList blogs={blogs} user={user} />}
 
-      {user && (
-        <div>
-          <button onClick={logoutHandler}>logout</button>
-        </div>
-      )}
+      {user && <button onClick={logoutHandler}>logout</button>}
+
       <UsersList users={users} />
+
+      <Routes>
+        <Route path="/users/:id" element={<User />} />
+      </Routes>
+
       <Footer />
     </div>
   );
