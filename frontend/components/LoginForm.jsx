@@ -1,16 +1,21 @@
 import { useState, useContext } from "react";
+import { useMutation } from "@tanstack/react-query";
+
+import { useNavigate } from "react-router-dom";
+
 import loginServices from "../services/login"
 
 import NotificationContext from "../src/NotificationContext";
 import UserContext from "../src/UserContext";
 
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate()
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const { setNotification } = useContext(NotificationContext);
   const { setUser } = useContext(UserContext);
@@ -21,6 +26,7 @@ const LoginForm = () => {
       setUsername("");
       setPassword("");
       setUser(returnedUser)
+      navigate("/")
     },
     onError: () =>{
       setNotification("Wrong credentials", 3000);

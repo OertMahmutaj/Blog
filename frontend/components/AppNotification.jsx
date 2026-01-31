@@ -2,7 +2,7 @@ import { useContext } from "react";
 import NotificationContext from "../src/NotificationContext";
 
 const AppNotification = () => {
-  const { notification } = useContext(NotificationContext);
+  const { notifications } = useContext(NotificationContext);
 
   // if (!notification) {
   //   return null;
@@ -16,7 +16,13 @@ const AppNotification = () => {
     marginBottom: 10,
     background: "green",
   };
-  return <div style={style}>{notification}</div>;
+  if (notifications.length === 0) return null;
+
+  return (
+    <div style={style} className="notification">
+      {notifications[0].msg}
+    </div>
+  );
 };
 
-export default AppNotification;
+export default AppNotification

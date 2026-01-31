@@ -1,11 +1,11 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useEffect } from "react";
 
 const notificationReducer = (state, action) => {
   switch (action.type) {
-    case "SET_NOTIFICATION":
-      return action.payload;
-    case "CLEAR_NOTIFICATION":
-      return null;
+    case "ADD_NOTIFICATION":
+      return [...state, action.payload]; // add new notification to queue
+    case "REMOVE_NOTIFICATION":
+      return state.slice(1); // remove the first notification
     default:
       return state;
   }
@@ -14,21 +14,25 @@ const notificationReducer = (state, action) => {
 const NotificationContext = createContext();
 
 export const NotificationContextProvider = (props) => {
-  const [notification, notificationDispatch] = useReducer(
-    notificationReducer,
-    null,
-  );
+  const [notifications, dispatch] = useReducer(notificationReducer, []);
 
-  const setNotification = (msg, timeout) => {
-    notificationDispatch({ type: "SET_NOTIFICATION", payload: msg });
-    setTimeout(() => {
-      notificationDispatch({ type: "CLEAR_NOTIFICATION" });
-    }, timeout);
+  useEffect(() => {
+    if (notifications.length === 0) return;
+
+    const timer = setTimeout(() => {
+      dispatch({ type: "REMOVE_NOTIFICATION" });
+    }, notifications[0].timeout || 3000);
+
+    return () => clearTimeout(timer);
+  }, [notifications]);
+
+  const setNotification = (msg, timeout = 3000) => {
+    dispatch({ type: "ADD_NOTIFICATION", payload: { msg, timeout } });
   };
 
   return (
     <NotificationContext.Provider
-      value={{ notification, notificationDispatch, setNotification }}
+      value={{ notifications, setNotification }}
     >
       {props.children}
     </NotificationContext.Provider>

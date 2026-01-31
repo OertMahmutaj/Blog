@@ -86,6 +86,7 @@ const App = () => {
         )}
         {user && <Route path="/users" element={<UsersList users={users}/>}/>}
         {user && <Route path="/users/:id" element={<User />}/>}
+        {!user &&<Route path="/login" element={<LoginForm />}/>}
       </Routes>
       <p>{user && <button onClick={logoutHandler}>logout</button>}</p>
       <Footer />

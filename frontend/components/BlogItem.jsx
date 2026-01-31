@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
 
@@ -14,6 +14,7 @@ const BlogItem = () => {
   const { setNotification } = useContext(NotificationContext);
   const { user } = useContext(UserContext);
   const queryClient = useQueryClient();
+  const navigate = useNavigate()
 
   const comment = useField("text");
 
@@ -55,12 +56,15 @@ const BlogItem = () => {
   //delete logic
 
   const deleteBlogMutation = useMutation({
-    mutationFn: blogServices.deleteBlog,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["blogs"] });
-      setNotification(`Deleted blog ${blog.title}`, 3000);
-    },
-  });
+  mutationFn: blogServices.deleteBlog,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ["blogs"] });
+    queryClient.removeQueries({ queryKey: ["blog", id] }); 
+    setNotification(`Deleted blog ${blog.title}`, 3000);
+    navigate("/blogs")
+  },
+});
+
 
   const handleDelete = (blog) => {
     const confirmDelete = window.confirm(
