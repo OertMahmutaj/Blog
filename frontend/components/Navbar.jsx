@@ -1,17 +1,13 @@
-import { Link } from "react-router-dom";
+import { StyledNavLink } from "../styles/Navbar.styles";
 
 const Navbar = () => {
+  return (
+    <div>
+      <StyledNavLink to="/blogs">Blogs</StyledNavLink>
+      <StyledNavLink to="/users">Users</StyledNavLink>
+      <StyledNavLink to="/login">Log in</StyledNavLink>
+    </div>
+  );
+};
 
-    return (
-        <div>
-            <Link to={"/blogs"}>Blogs</Link>
-            {" "}
-            <Link to={"/users"}>Users</Link>
-            {" "}
-            <Link to={"/login"}>Log in</Link>
-        </div>
-    )
-
-}
-
-export default Navbar
+export default Navbar;

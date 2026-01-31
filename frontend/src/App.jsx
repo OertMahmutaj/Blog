@@ -1,5 +1,5 @@
 import { useRef, useContext } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -18,6 +18,11 @@ import BlogItem from "../components/BlogItem";
 import Navbar from "../components/Navbar";
 
 import UserContext from "./UserContext";
+
+import { Title, Wrapper } from "../styles/Title.styles";
+import { StyledNavLink } from "../styles/Navbar.styles";
+import { GlobalStyle } from "../styles/Global.styles";
+import { Button } from "../styles/Buttons.styles";
 
 const App = () => {
   const blogFormRef = useRef();
@@ -52,9 +57,12 @@ const App = () => {
   // console.log(users);
   return (
     <div>
-      <Link to={"/"}>
-        <h1>Blogs</h1>
-      </Link>
+      <GlobalStyle />
+      <StyledNavLink to={"/"}>
+        <Wrapper>
+          <Title>Blogs</Title>
+        </Wrapper>
+      </StyledNavLink>
       <Navbar />
       <AppNotification />
 
@@ -63,16 +71,6 @@ const App = () => {
           <BlogForm user={user} />
         </Togglable>
       )}
-
-      {/* {!user ? (
-        <LoginForm />
-      ) : (
-        <Togglable buttonLabel="Show blogs">
-          <BlogList blogs={blogs} user={user} />
-        </Togglable>
-      )} */}
-
-      {/* {user && <UsersList users={users} />} */}
       <Routes>
         <Route path="/users/:id" element={<User />} />
         {user && <Route path="/blogs/:id" element={<BlogItem />} />}
@@ -84,11 +82,11 @@ const App = () => {
             element={<BlogList blogs={blogs} user={user} />}
           />
         )}
-        {user && <Route path="/users" element={<UsersList users={users}/>}/>}
-        {user && <Route path="/users/:id" element={<User />}/>}
-        {!user &&<Route path="/login" element={<LoginForm />}/>}
+        {user && <Route path="/users" element={<UsersList users={users} />} />}
+        {user && <Route path="/users/:id" element={<User />} />}
+        {!user && <Route path="/login" element={<LoginForm />} />}
       </Routes>
-      <p>{user && <button onClick={logoutHandler}>logout</button>}</p>
+      <p>{user && <Button onClick={logoutHandler}>logout</Button>}</p>
       <Footer />
     </div>
   );

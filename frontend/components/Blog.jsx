@@ -1,13 +1,7 @@
-import { Link } from "react-router-dom";
+import { StyledNavLink } from "../styles/Navbar.styles";
 
 const Blog = ({ blog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
+
   if (!blog) {
     return <div>is loading</div>;
   }
@@ -15,10 +9,10 @@ const Blog = ({ blog }) => {
   // console.log(blog.id)
 
   return (
-    <div style={blogStyle} className="blog">
-      <Link to={`/blogs/${blog.id}`}>
+    <div className="blog">
+      <StyledNavLink to={`/blogs/${blog.id}`}>
         <strong>{blog.title}</strong>
-      </Link>
+      </StyledNavLink>
     </div>
   );
 };

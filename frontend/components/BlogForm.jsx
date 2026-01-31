@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 
 import { useField } from "../hooks/customHooks";
 
@@ -7,8 +7,14 @@ import blogServices from "../services/blogs";
 
 import NotificationContext from "../src/NotificationContext";
 
+import { StyledInput } from "../styles/Input.styles";
+import { Button } from "../styles/Buttons.styles";
+
 const BlogForm = () => {
   const { setNotification } = useContext(NotificationContext);
+  const authorRef = useRef();
+  const titleRef = useRef();
+  const urlRef = useRef();
 
   const [user, setUser] = useState(null);
   const author = useField("text");
@@ -30,7 +36,7 @@ const BlogForm = () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
     },
     onError: (error) => {
-      setNotification(error.response.data.error, 3000);
+      setNotification(error.response.data.error, "error", 3000);
     },
   });
 
@@ -55,10 +61,33 @@ const BlogForm = () => {
 
   return (
     <form onSubmit={addBlog}>
-      <input placeholder="author" {...authorInput} />
-      <input placeholder="title" {...titleInput} />
-      <input placeholder="url" {...urlInput} />
-      <button type="submit">Submit</button>
+      <li>
+        <StyledInput
+          ref={authorRef}
+          placeholder="author"
+          {...authorInput}
+          onMouseEnter={() => authorRef.current.focus()}
+        />
+      </li>
+      <li>
+        <StyledInput
+          ref={titleRef}
+          placeholder="title"
+          {...titleInput}
+          onMouseEnter={() => titleRef.current.focus()}
+        />
+      </li>
+      <li>
+        <StyledInput
+          ref={urlRef}
+          placeholder="url"
+          {...urlInput}
+          onMouseEnter={() => urlRef.current.focus()}
+        />
+      </li>
+      <li>
+        <Button type="submit" >Submit</Button>
+      </li>
     </form>
   );
 };

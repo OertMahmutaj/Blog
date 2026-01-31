@@ -1,22 +1,15 @@
-import { Link } from "react-router-dom";
+import { StyledNavLink } from "../styles/Navbar.styles";
 
 const Users = ({ user }) => {
   if (!user) {
     return <div>loading...</div>;
   }
 
-  const userStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    // border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
 
   return (
-    <div style={userStyle}>
+    <div>
       <p>
-        <Link to={`${user.id}`}>{user.name}</Link> blogs: {user.blogs.length}
+        <StyledNavLink to={`${user.id}`}>{user.name}</StyledNavLink> blogs: {user.blogs.length}
       </p>
     </div>
   );

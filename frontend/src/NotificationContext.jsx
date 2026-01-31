@@ -1,11 +1,11 @@
-import { createContext, useReducer, useEffect } from "react";
+import { createContext, useReducer, useRef } from "react";
 
 const notificationReducer = (state, action) => {
   switch (action.type) {
-    case "ADD_NOTIFICATION":
-      return [...state, action.payload]; // add new notification to queue
-    case "REMOVE_NOTIFICATION":
-      return state.slice(1); // remove the first notification
+    case "SET_NOTIFICATION":
+      return action.payload;
+    case "CLEAR_NOTIFICATION":
+      return null;
     default:
       return state;
   }
@@ -13,28 +13,41 @@ const notificationReducer = (state, action) => {
 
 const NotificationContext = createContext();
 
-export const NotificationContextProvider = (props) => {
-  const [notifications, dispatch] = useReducer(notificationReducer, []);
+export const NotificationContextProvider = ({ children }) => {
+  const [notification, dispatch] = useReducer(notificationReducer, null);
+  const timeoutRef = useRef(null);
 
-  useEffect(() => {
-    if (notifications.length === 0) return;
+  const clearNotification = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    dispatch({ type: "CLEAR_NOTIFICATION" });
+  };
 
-    const timer = setTimeout(() => {
-      dispatch({ type: "REMOVE_NOTIFICATION" });
-    }, notifications[0].timeout || 3000);
+  const setNotification = (msg, type = "success", timeout = 3000) => {
+    clearNotification();
 
-    return () => clearTimeout(timer);
-  }, [notifications]);
+    const newNotification = {
+      msg,
+      timeout,
+      type,
+      id: Date.now(),
+    };
 
-  const setNotification = (msg, timeout = 3000) => {
-    dispatch({ type: "ADD_NOTIFICATION", payload: { msg, timeout } });
+    dispatch({ type: "SET_NOTIFICATION", payload: newNotification });
+
+    timeoutRef.current = setTimeout(() => {
+      dispatch({ type: "CLEAR_NOTIFICATION" });
+      timeoutRef.current = null;
+    }, timeout);
   };
 
   return (
     <NotificationContext.Provider
-      value={{ notifications, setNotification }}
+      value={{ notification, setNotification, clearNotification }}
     >
-      {props.children}
+      {children}
     </NotificationContext.Provider>
   );
 };
