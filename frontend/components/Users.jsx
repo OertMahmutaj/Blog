@@ -8,7 +8,7 @@ const Users = ({ user }) => {
   const userStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    // border: "solid",
     borderWidth: 1,
     marginBottom: 5,
   };

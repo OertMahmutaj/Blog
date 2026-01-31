@@ -4,7 +4,7 @@ import userServices from "../services/users";
 
 const User = () => {
   const { id } = useParams();
-  console.log(id);
+  // console.log(id);
   
 
   const { data: user, isLoading, isError } = useQuery({
@@ -13,7 +13,7 @@ const User = () => {
     enabled: !!id,
     refetchOnWindowFocus: false,
   });
-  console.log(user);
+  // console.log(user);
   if (isLoading) return <div>loading...</div>;
   if (isError) return <div>failed to load user</div>;
 
