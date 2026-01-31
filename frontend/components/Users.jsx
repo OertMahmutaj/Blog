@@ -16,7 +16,7 @@ const Users = ({ user }) => {
   return (
     <div style={userStyle}>
       <p>
-        <Link to={`users/${user.id}`}>{user.name}</Link> blogs: {user.blogs.length}
+        <Link to={`${user.id}`}>{user.name}</Link> blogs: {user.blogs.length}
       </p>
     </div>
   );

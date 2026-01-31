@@ -72,7 +72,7 @@ const App = () => {
         </Togglable>
       )} */}
 
-      {user && <UsersList users={users} />}
+      {/* {user && <UsersList users={users} />} */}
       <Routes>
         <Route path="/users/:id" element={<User />} />
         {user && <Route path="/blogs/:id" element={<BlogItem />} />}
@@ -84,6 +84,8 @@ const App = () => {
             element={<BlogList blogs={blogs} user={user} />}
           />
         )}
+        {user && <Route path="/users" element={<UsersList users={users}/>}/>}
+        {user && <Route path="/users/:id" element={<User />}/>}
       </Routes>
       <p>{user && <button onClick={logoutHandler}>logout</button>}</p>
       <Footer />
