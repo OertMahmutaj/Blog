@@ -46,4 +46,12 @@ const deleteBlog = async (id) => {
   return response.data;
 };
 
-export default { getAll, create, setToken, deleteBlog, like };
+const getBlog = async (id) => {
+  const config ={
+    headers: { Authorization: token },
+  };
+  const response = await axios.get(`${baseUrl}/${id}`, config);
+  return response.data
+}
+
+export default { getAll, create, setToken, deleteBlog, like, getBlog };

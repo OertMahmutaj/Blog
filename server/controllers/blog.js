@@ -37,14 +37,14 @@ blogRouter.post("/", middleware.userExtractor, async (request, response) => {
 
 blogRouter.get("/:id", async (request, response, next) => {
   try {
-    const blog = await Blog.findById(request.params.id);
+    const blog = await Blog.findById(request.params.id).populate("user", { username: 1, name: 1 });
     if (blog) {
       response.json(blog);
     } else {
-      response.status(404).end(); // valid id, not found
+      response.status(404).end();
     }
   } catch (error) {
-    next(error); // CastError will be handled by errorHandler -> 400
+    next(error);
   }
 });
 

@@ -10,6 +10,7 @@ const AppNotification = () => {
 
   const style = {
     border: "solid",
+    height: 30,
     padding: 10,
     borderWidth: 1,
     marginBottom: 10,
