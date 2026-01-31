@@ -8,7 +8,6 @@ import blogServices from "../services/blogs";
 import NotificationContext from "../src/NotificationContext";
 
 const BlogForm = () => {
-
   const { setNotification } = useContext(NotificationContext);
 
   const [user, setUser] = useState(null);
@@ -31,9 +30,8 @@ const BlogForm = () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
     },
     onError: (error) => {
-      setNotification(error.response.data.error, 3000)
-      // console.log(error.response.data.error)
-    }
+      setNotification(error.response.data.error, 3000);
+    },
   });
 
   const addBlog = async (event) => {
@@ -51,12 +49,15 @@ const BlogForm = () => {
     title.reset();
     url.reset();
   };
+  const { reset: authorReset, ...authorInput } = author;
+  const { reset: titleReset, ...titleInput } = title;
+  const { reset: urlReset, ...urlInput } = url;
 
   return (
     <form onSubmit={addBlog}>
-      <input placeholder="author" type="author" {...author} />
-      <input placeholder="title" type="title" {...title} />
-      <input placeholder="url" type="url" {...url} />
+      <input placeholder="author" {...authorInput} />
+      <input placeholder="title" {...titleInput} />
+      <input placeholder="url" {...urlInput} />
       <button type="submit">Submit</button>
     </form>
   );

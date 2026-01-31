@@ -39,14 +39,11 @@ const BlogList = ({ blogs }) => {
   //   }
   // };
   // console.log(user);
+
   return (
     <div>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog}>
-          {/* {user?.username === blog?.user?.username && (
-            <button onClick={() => handleDelete(blog)}>Delete</button>
-          )} */}
-          {/* <BlogItem handleLike={handleLike}/> */}
         </Blog>
       ))}
     </div>

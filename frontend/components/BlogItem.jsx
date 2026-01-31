@@ -8,11 +8,14 @@ import Togglable from "./Togglable";
 
 import blogServices from "../services/blogs";
 import UserContext from "../src/UserContext";
+import { useField } from "../hooks/customHooks";
 
 const BlogItem = () => {
   const { setNotification } = useContext(NotificationContext);
   const { user } = useContext(UserContext);
   const queryClient = useQueryClient();
+
+  const comment = useField("text");
 
   const { id } = useParams();
   // console.log(id);
@@ -71,15 +74,34 @@ const BlogItem = () => {
       console.error(error);
     }
   };
-  console.log(user);
-  console.log(blog);
+  //comment logic
+  const commentBlogMutation = useMutation({
+    mutationFn: ({ id, comment }) => blogServices.commentBlog({ id, comment }),
+  });
+
+  const handleComment = (event) => {
+    event.preventDefault();
+    if (!comment.value) return;
+
+    commentBlogMutation.mutate(
+      { id: blog.id, comment: comment.value },
+      {
+        onSuccess: (updatedBlog) => {
+          queryClient.setQueryData(["blog", blog.id], updatedBlog);
+          queryClient.setQueryData(["blogs"], (oldBlogs) =>
+            oldBlogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b)),
+          );
+          setNotification(`Commented on ${blog.title}`, 3000);
+          commentReset();
+        },
+      },
+    );
+  };
+
+  const { reset: commentReset, ...commentInput } = comment;
 
   if (isLoading) return <div>loading...</div>;
   if (isError) return <div>failed to load blog</div>;
-  // console.log(blog);
-  // if (blog) {
-  //   return <div>is loading</div>;
-  // }
 
   return (
     <div>
@@ -98,11 +120,22 @@ const BlogItem = () => {
               {" "}
               <li>Url.: {blog.url}</li>
               <li>Likes.: {blog.likes}</li>
-              {/* <li>{blog.user?.username}</li> */}
+              <li>Comments:</li>
+              <ul>
+                {blog.comments?.map((comment, index) => (
+                  <li key={index}>{comment}</li>
+                ))}
+              </ul>
             </ul>
           </label>
           <button onClick={() => handleLike(blog)}>Like</button>
         </div>
+      </Togglable>
+      <Togglable buttonLabel={"Comment"}>
+        <form onSubmit={handleComment}>
+          <input placeholder="comment" {...commentInput} />
+          <button type="submit">Comment</button>
+        </form>
       </Togglable>
 
       {user?.username === blog?.user?.username && (

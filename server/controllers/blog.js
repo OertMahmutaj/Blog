@@ -12,7 +12,7 @@ const middleware = require("../utils/middleware");
 
 blogRouter.get("/", async (request, response) => {
   const blog = await Blog.find({}).populate("user", { username: 1, name: 1 });
-
+  console.log(blog)
   response.json(blog);
 });
 
@@ -37,7 +37,10 @@ blogRouter.post("/", middleware.userExtractor, async (request, response) => {
 
 blogRouter.get("/:id", async (request, response, next) => {
   try {
-    const blog = await Blog.findById(request.params.id).populate("user", { username: 1, name: 1 });
+    const blog = await Blog.findById(request.params.id).populate("user", {
+      username: 1,
+      name: 1,
+    });
     if (blog) {
       response.json(blog);
     } else {
@@ -104,5 +107,29 @@ blogRouter.put("/:id", middleware.userExtractor, async (request, response) => {
     response.status(400).json({ error: "invalid id or token" });
   }
 });
+
+blogRouter.put("/:id/comments", middleware.userExtractor, async (req, res) => {
+  const { comment } = req.body; // note: single comment string
+
+  if (!comment) return res.status(400).json({ error: "Comment is required" });
+
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      req.params.id,
+      { $push: { comments: comment } }, // push new comment into array
+      { new: true, runValidators: true }
+    ).populate("user", { username: 1, name: 1 });
+
+    if (!updatedBlog) {
+      return res.status(404).json({ error: "Blog not found" });
+    }
+
+    res.status(200).json(updatedBlog);
+  } catch (error) {
+    res.status(400).json({ error: "Invalid ID" });
+  }
+});
+
+
 
 module.exports = blogRouter;

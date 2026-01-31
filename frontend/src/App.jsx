@@ -15,6 +15,7 @@ import BlogList from "../components/BlogList";
 import UsersList from "../components/UsersList";
 import User from "../components/User";
 import BlogItem from "../components/BlogItem";
+import Navbar from "../components/Navbar";
 
 import UserContext from "./UserContext";
 
@@ -54,7 +55,7 @@ const App = () => {
       <Link to={"/"}>
         <h1>Blogs</h1>
       </Link>
-
+      <Navbar />
       <AppNotification />
 
       {user && (
@@ -63,22 +64,28 @@ const App = () => {
         </Togglable>
       )}
 
-      {!user ? (
+      {/* {!user ? (
         <LoginForm />
       ) : (
         <Togglable buttonLabel="Show blogs">
           <BlogList blogs={blogs} user={user} />
         </Togglable>
-      )}
-
-      {user && <button onClick={logoutHandler}>logout</button>}
+      )} */}
 
       {user && <UsersList users={users} />}
       <Routes>
         <Route path="/users/:id" element={<User />} />
         {user && <Route path="/blogs/:id" element={<BlogItem />} />}
+        {!user ? (
+          <Route path="/login" element={<LoginForm />} />
+        ) : (
+          <Route
+            path="/blogs"
+            element={<BlogList blogs={blogs} user={user} />}
+          />
+        )}
       </Routes>
-
+      <p>{user && <button onClick={logoutHandler}>logout</button>}</p>
       <Footer />
     </div>
   );

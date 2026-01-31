@@ -8,10 +8,12 @@ const UsersList = ({ users }) => {
 
   return (
     <div>
+      <Togglable buttonLabel={`Show Users`}>
       {users.map((user) => (
-        <Togglable buttonLabel={`Show details for ${user.name}`}><Users key={user.id} user={user} />
+        <Togglable key={user.id} buttonLabel={`Show details for ${user.name}`}><Users user={user} />
         </Togglable>
       ))}
+      </Togglable>
     </div>
   );
 };
