@@ -11,3 +11,8 @@ export const StyledNavLink = styled(Link)`
     text-decoration: underline;
   }
 `;
+export const Wrapper = styled.section`
+  padding: 1em;
+  background: #d9db62;
+  box-sizing: border-box;
+`;

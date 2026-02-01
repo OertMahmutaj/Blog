@@ -36,8 +36,10 @@ const BlogForm = () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
     },
     onError: (error) => {
-      setNotification(error.response.data.error, "error", 3000);
-    },
+    const message =
+      error?.response?.data?.error || error.message || "Something went wrong";
+    setNotification(message, "error", 3000);
+  },
   });
 
   const addBlog = async (event) => {
@@ -54,6 +56,8 @@ const BlogForm = () => {
     author.reset();
     title.reset();
     url.reset();
+
+    setNotification(`Blog ${newBlog.title} added`, "success", 3000);
   };
   const { reset: authorReset, ...authorInput } = author;
   const { reset: titleReset, ...titleInput } = title;

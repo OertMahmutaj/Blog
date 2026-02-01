@@ -1,7 +1,7 @@
 import { useRef, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import blogServices from "../services/blogs";
 import userServices from "../services/users";
@@ -16,24 +16,18 @@ import UsersList from "../components/UsersList";
 import User from "../components/User";
 import BlogItem from "../components/BlogItem";
 import Navbar from "../components/Navbar";
+import Logout from "../components/Logout";
 
 import UserContext from "./UserContext";
 
 import { Title, Wrapper } from "../styles/Title.styles";
 import { StyledNavLink } from "../styles/Navbar.styles";
 import { GlobalStyle } from "../styles/Global.styles";
-import { Button } from "../styles/Buttons.styles";
 
 const App = () => {
   const blogFormRef = useRef();
-  const queryClient = useQueryClient();
 
   const { user, clearUser } = useContext(UserContext);
-
-  const logoutHandler = () => {
-    clearUser();
-    queryClient.clear();
-  };
 
   const blogsQuery = useQuery({
     queryKey: ["blogs"],
@@ -58,35 +52,39 @@ const App = () => {
   return (
     <div>
       <GlobalStyle />
-      <StyledNavLink to={"/"}>
-        <Wrapper>
-          <Title>Blogs</Title>
-        </Wrapper>
-      </StyledNavLink>
-      <Navbar />
-      <AppNotification />
 
-      {user && (
-        <Togglable buttonLabel="Make a new Blog" ref={blogFormRef}>
-          <BlogForm user={user} />
-        </Togglable>
-      )}
-      <Routes>
-        <Route path="/users/:id" element={<User />} />
-        {user && <Route path="/blogs/:id" element={<BlogItem />} />}
-        {!user ? (
-          <Route path="/login" element={<LoginForm />} />
-        ) : (
-          <Route
-            path="/blogs"
-            element={<BlogList blogs={blogs} user={user} />}
-          />
+      <StyledNavLink to={"/"}>
+        <Title>Blogs</Title>
+      </StyledNavLink>
+
+      <Navbar />
+      <Wrapper>
+        <AppNotification />
+
+        {user && (
+          <Togglable buttonLabel="Make a new Blog" ref={blogFormRef}>
+            <BlogForm user={user} />
+          </Togglable>
         )}
-        {user && <Route path="/users" element={<UsersList users={users} />} />}
-        {user && <Route path="/users/:id" element={<User />} />}
-        {!user && <Route path="/login" element={<LoginForm />} />}
-      </Routes>
-      <p>{user && <Button onClick={logoutHandler}>logout</Button>}</p>
+        <Routes>
+          <Route path="/users/:id" element={<User />} />
+          {user && <Route path="/blogs/:id" element={<BlogItem />} />}
+          {!user ? (
+            <Route path="/login" element={<LoginForm />} />
+          ) : (
+            <Route
+              path="/blogs"
+              element={<BlogList blogs={blogs} user={user} />}
+            />
+          )}
+          {user && (
+            <Route path="/users" element={<UsersList users={users} />} />
+          )}
+          {user && <Route path="/users/:id" element={<User />} />}
+          {!user && <Route path="/login" element={<LoginForm />} />}
+          {user && <Route path="/logout"element={<Logout />}/>}
+        </Routes>
+      </Wrapper>
       <Footer />
     </div>
   );

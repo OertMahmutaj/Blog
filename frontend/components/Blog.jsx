@@ -6,7 +6,6 @@ const Blog = ({ blog }) => {
     return <div>is loading</div>;
   }
 
-  // console.log(blog.id)
 
   return (
     <div className="blog">

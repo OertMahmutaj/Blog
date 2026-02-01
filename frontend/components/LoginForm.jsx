@@ -8,6 +8,10 @@ import loginServices from "../services/login"
 import NotificationContext from "../src/NotificationContext";
 import UserContext from "../src/UserContext";
 
+//styles
+import { Button } from "../styles/Buttons.styles";
+import { StyledInput } from "../styles/Input.styles";
+
 
 
 const LoginForm = () => {
@@ -29,7 +33,7 @@ const LoginForm = () => {
       navigate("/")
     },
     onError: () =>{
-      setNotification("Wrong credentials", 3000);
+      setNotification("Wrong credentials", "error", 3000);
     }
   })
 
@@ -40,7 +44,7 @@ const LoginForm = () => {
 
   return (
     <form autoComplete="on" onSubmit={handleLogin}>
-      <input
+      <StyledInput
         type="text"
         name="username"
         autoComplete="username"
@@ -48,7 +52,7 @@ const LoginForm = () => {
         onChange={(e) => setUsername(e.target.value)}
         placeholder="Username"
       />
-      <input
+      <StyledInput
         type="password"
         name="password"
         autoComplete="current-password"
@@ -56,7 +60,7 @@ const LoginForm = () => {
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
       />
-      <button type="submit">Login</button>
+      <Button type="submit">Login</Button>
     </form>
   );
 };

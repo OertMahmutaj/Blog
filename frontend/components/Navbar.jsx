@@ -1,12 +1,13 @@
-import { StyledNavLink } from "../styles/Navbar.styles";
+import { StyledNavLink, Wrapper } from "../styles/Navbar.styles";
 
 const Navbar = () => {
   return (
-    <div>
+    <Wrapper>
       <StyledNavLink to="/blogs">Blogs</StyledNavLink>
       <StyledNavLink to="/users">Users</StyledNavLink>
       <StyledNavLink to="/login">Log in</StyledNavLink>
-    </div>
+      <StyledNavLink to="/logout">Log out</StyledNavLink>
+    </Wrapper>
   );
 };
 

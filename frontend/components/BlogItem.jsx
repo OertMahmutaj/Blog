@@ -10,6 +10,11 @@ import blogServices from "../services/blogs";
 import UserContext from "../src/UserContext";
 import { useField } from "../hooks/customHooks";
 
+//styles
+import { Button } from "../styles/Buttons.styles";
+import { StyledInput } from "../styles/Input.styles"
+import { Title } from "../styles/Title.styles";
+
 const BlogItem = () => {
   const { setNotification } = useContext(NotificationContext);
   const { user } = useContext(UserContext);
@@ -109,7 +114,7 @@ const BlogItem = () => {
 
   return (
     <div>
-      <h2>{blog.title}</h2>
+      <Title>{blog.title}</Title>
       <Togglable buttonLabel="viewBlog">
         <p>
           {blog.title} by {blog.author}
@@ -132,18 +137,18 @@ const BlogItem = () => {
               </ul>
             </ul>
           </label>
-          <button onClick={() => handleLike(blog)}>Like</button>
+          <Button onClick={() => handleLike(blog)}>Like</Button>
         </div>
       </Togglable>
       <Togglable buttonLabel={"Comment"}>
         <form onSubmit={handleComment}>
-          <input placeholder="comment" {...commentInput} />
-          <button type="submit">Comment</button>
+          <StyledInput placeholder="comment" {...commentInput} />
+          <Button type="submit">Comment</Button>
         </form>
       </Togglable>
 
       {user?.username === blog?.user?.username && (
-        <button onClick={() => handleDelete(blog)}>Delete</button>
+        <Button onClick={() => handleDelete(blog)}>Delete</Button>
       )}
     </div>
   );
